@@ -11,11 +11,13 @@ export default class extends PureComponent{
     className: PropTypes.string,
     value: PropTypes.bool,
     onChange: PropTypes.func,
+    template: PropTypes.func,
   };
 
   static defaultProps = {
     value: false,
-    onChange: noop
+    onChange: noop,
+    template: noop
   };
   /*===properties end===*/
 
@@ -49,7 +51,7 @@ export default class extends PureComponent{
 
     return (
       <button {...props} onClick={this._onClick} className={ classNames("react-ant-side-toggle", className) }>
-        <Icon type={value ? 'menu-unfold' : 'menu-fold'}/>
+        { template(value) || <Icon type={value ? 'menu-unfold' : 'menu-fold'}/>}
       </button>
     )
   }
