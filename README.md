@@ -9,11 +9,13 @@
     className: PropTypes.string,
     value: PropTypes.bool,
     onChange: PropTypes.func,
+    template: PropTypes.func,
   };
 
   static defaultProps = {
     value: false,
-    onChange: noop
+    onChange: noop,
+    template: noop
   };
   
 ```
