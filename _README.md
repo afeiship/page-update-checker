@@ -6,10 +6,12 @@
 ```javascript
 BACKUP_PROPERTIES
 ```
+## install
+```bash
+import ReactAntSideToggle from 'react-ant-side-toggle';
+```
 
 ## usage:
-import ReactAntSideToggle from 'react-ant-side-toggle';
-
 ```jsx
 BACKUP_USAGE
 ```
