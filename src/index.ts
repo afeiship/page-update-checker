@@ -54,7 +54,7 @@ class PageUpdateChecker {
         .then(response => response.text())
         .then(newHtml => {
           if (this.latestHtml && isUpdateAvailable?.(this.latestHtml, newHtml)) {
-            onUpdateAvailable?.call(this, this);
+            onUpdateAvailable?.call(null, this);
           }
           this.latestHtml = newHtml;
         })
