@@ -2,7 +2,7 @@ export interface PageUpdateCheckerOptions {
   url?: string;
   interval?: number;
   isUpdateAvailable?: (latestHtml: string, newHtml: string) => boolean;
-  onUpdateAvailable?: () => void;
+  onUpdateAvailable?: (ctx: PageUpdateChecker) => void;
   onError?: (error: Error) => void;
 }
 
@@ -10,7 +10,7 @@ const defaultOptions: PageUpdateCheckerOptions = {
   url: '',
   interval: 1000 * 60 * 5, // 5 minutes
   isUpdateAvailable: (latestHtml, newHtml) => latestHtml !== newHtml,
-  onUpdateAvailable: () => console.log('Update available'),
+  onUpdateAvailable: (ctx) => console.log('Update available'),
   onError: error => console.error(error),
 };
 
@@ -41,7 +41,7 @@ class PageUpdateChecker {
         .then(newHtml => {
           if (this.latestHtml) {
             if (isUpdateAvailable?.(this.latestHtml, newHtml)) {
-              onUpdateAvailable?.call(this);
+              onUpdateAvailable?.call(this, this);
             }
           }
           this.latestHtml = newHtml;
