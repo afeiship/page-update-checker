@@ -22,7 +22,7 @@ class PageUpdateChecker {
 
   constructor(options: PageUpdateCheckerOptions) {
     this.options = { ...defaultOptions, ...options };
-    localStorage.setItem('page_checker_interval', '0');
+    this.reset();
   }
 
   static run(options: PageUpdateCheckerOptions) {
