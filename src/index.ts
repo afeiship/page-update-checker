@@ -18,14 +18,12 @@ const defaultOptions: PageUpdateCheckerOptions = {
 
 class PageUpdateChecker {
   private readonly options: PageUpdateCheckerOptions;
-  private readonly storeKey: string;
   private intervalId: number | null = null;
   private isIgnoreThisTime = false;
   private latestHtml = '';
 
   constructor(options: PageUpdateCheckerOptions) {
     this.options = { ...defaultOptions, ...options };
-    this.storeKey = this.options.storeKey!;
     this.reset();
   }
 
@@ -36,16 +34,17 @@ class PageUpdateChecker {
   }
 
   reset() {
-    const storedInterval = localStorage.getItem(this.storeKey);
-    if (!storedInterval) localStorage.setItem(this.storeKey, '0');
+    const { storeKey } = this.options;
+    const storedInterval = localStorage.getItem(storeKey!);
+    if (!storedInterval) localStorage.setItem(storeKey!, '0');
     this.latestHtml = '';
     this.isIgnoreThisTime = false;
     this.stop();
   }
 
   start() {
-    const { interval, url, isUpdateAvailable, onUpdateAvailable, onError } = this.options;
-    const _interval = parseInt(localStorage.getItem(this.storeKey) || '0') || interval!;
+    const { interval, url, isUpdateAvailable, onUpdateAvailable, onError, storeKey } = this.options;
+    const _interval = parseInt(localStorage.getItem(storeKey!) || '0') || interval!;
     if (_interval <= 0) return;
 
     this.intervalId = window.setInterval(() => {
