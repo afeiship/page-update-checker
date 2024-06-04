@@ -1,6 +1,7 @@
 export interface PageUpdateCheckerOptions {
   url?: string;
   interval?: number;
+  storeKey?: string;
   isUpdateAvailable?: (latestHtml: string, newHtml: string) => boolean;
   onUpdateAvailable?: (ctx: PageUpdateChecker) => void;
   onError?: (error: Error) => void;
@@ -9,6 +10,7 @@ export interface PageUpdateCheckerOptions {
 const defaultOptions: PageUpdateCheckerOptions = {
   url: '/index.html',
   interval: 1000 * 60 * 5, // 5 minutes
+  storeKey: 'page_checker_interval',
   isUpdateAvailable: (latestHtml, newHtml) => latestHtml !== newHtml,
   onUpdateAvailable: (ctx) => console.log('Update available'),
   onError: error => console.error(error),
@@ -19,9 +21,11 @@ class PageUpdateChecker {
   private intervalId: number | null = null;
   private isIgnoreThisTime = false;
   private latestHtml = '';
+  private storeKey: string;
 
   constructor(options: PageUpdateCheckerOptions) {
     this.options = { ...defaultOptions, ...options };
+    this.storeKey = this.options.storeKey!;
     this.reset();
   }
 
@@ -32,15 +36,16 @@ class PageUpdateChecker {
   }
 
   reset() {
+    const storedInterval = localStorage.getItem(this.storeKey);
+    if (!storedInterval) localStorage.setItem(this.storeKey, '0');
     this.latestHtml = '';
-    localStorage.setItem('page_checker_interval', '0');
     this.isIgnoreThisTime = false;
     this.stop();
   }
 
   start() {
     const { interval, url, isUpdateAvailable, onUpdateAvailable, onError } = this.options;
-    const _interval = parseInt(localStorage.getItem('page_checker_interval') || '0') || interval!;
+    const _interval = parseInt(localStorage.getItem(this.storeKey) || '0') || interval!;
     if (_interval <= 0) return;
 
     this.intervalId = window.setInterval(() => {
