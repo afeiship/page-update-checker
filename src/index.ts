@@ -11,17 +11,17 @@ const defaultOptions: PageUpdateCheckerOptions = {
   url: '/index.html',
   interval: 1000 * 60 * 5, // 5 minutes
   storeKey: 'page_checker_interval',
-  isUpdateAvailable: (latestHtml, newHtml) => latestHtml !== newHtml,
+  isUpdateAvailable: (oldHtml, newHtml) => oldHtml !== newHtml,
   onUpdateAvailable: (ctx) => console.log('Update available'),
   onError: error => console.error(error),
 };
 
 class PageUpdateChecker {
   private readonly options: PageUpdateCheckerOptions;
+  private readonly storeKey: string;
   private intervalId: number | null = null;
   private isIgnoreThisTime = false;
   private latestHtml = '';
-  private storeKey: string;
 
   constructor(options: PageUpdateCheckerOptions) {
     this.options = { ...defaultOptions, ...options };
@@ -54,10 +54,8 @@ class PageUpdateChecker {
       fetch(url!)
         .then(response => response.text())
         .then(newHtml => {
-          if (this.latestHtml) {
-            if (isUpdateAvailable?.(this.latestHtml, newHtml)) {
-              onUpdateAvailable?.call(this, this);
-            }
+          if (this.latestHtml && isUpdateAvailable?.(this.latestHtml, newHtml)) {
+            onUpdateAvailable?.call(this, this);
           }
           this.latestHtml = newHtml;
         })
