@@ -22,6 +22,7 @@ class PageUpdateChecker {
 
   constructor(options: PageUpdateCheckerOptions) {
     this.options = { ...defaultOptions, ...options };
+    localStorage.setItem('page_checker_interval', '0');
   }
 
   static run(options: PageUpdateCheckerOptions) {
@@ -30,9 +31,19 @@ class PageUpdateChecker {
     return checker;
   }
 
+  reset() {
+    this.latestHtml = '';
+    localStorage.setItem('page_checker_interval', '0');
+    this.isIgnoreThisTime = false;
+    this.stop();
+  }
+
   start() {
     const { interval, url, isUpdateAvailable, onUpdateAvailable, onError } = this.options;
     const _url = url || '/index.html';
+    const _interval = parseInt(localStorage.getItem('page_checker_interval') || '0') || interval!;
+    if (_interval <= 0) return;
+
     this.intervalId = window.setInterval(() => {
       if (this.isIgnoreThisTime) return;
 
@@ -50,7 +61,7 @@ class PageUpdateChecker {
           onError?.(error);
           this.ignore();
         });
-    }, interval);
+    }, _interval);
   }
 
   ignore() {
