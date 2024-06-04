@@ -1,63 +1,45 @@
-# react-ant-side-toggle
-> Side toggle button for ant.
+# page-update-checker
+> A lightweight, self-contained JavaScript module for real-time webpage update detection and user notification.
 
+[![version][version-image]][version-url]
+[![license][license-image]][license-url]
+[![size][size-image]][size-url]
+[![download][download-image]][download-url]
 
-## properties:
-```javascript
-
-  static propTypes = {
-    className: PropTypes.string,
-    value: PropTypes.bool,
-    onChange: PropTypes.func,
-    template: PropTypes.func,
-  };
-
-  static defaultProps = {
-    value: false,
-    onChange: noop,
-    template: noop
-  };
-  
-```
-## install
-```bash
-import ReactAntSideToggle from 'react-ant-side-toggle';
+## installation
+```shell
+npm install @jswork/page-update-checker
 ```
 
-## usage:
-```jsx
+## usage
+```js
+import PageUpdateChecker from '@jswork/page-update-checker';
 
-// install: npm install afeiship/react-ant-side-toggle --save
-// import : import ReactAntSideToggle from 'react-ant-side-toggle'
-
-class App extends React.Component{
-  state = {
-
-  };
-
-  constructor(props){
-    super(props);
-    window.demo = this;
-    window.refs = this.refs;
-    window.rc = this.refs.rc;
+const checker = PageUpdateChecker.run({
+  url: 'https://afeiship.github.io/page-update-checker',
+  interval: 1000 * 60 * 1, // 1 minutes
+  onUpdateAvailable: () => {
+    const confirmed = window.confirm('网页内容已经更新，你是否现在刷新？');
+    if (confirmed) {
+      window.location.reload();
+    } else {
+      this.ignore();
+    }
   }
-
-  render(){
-    return (
-      <div className="hello-react-ant-side-toggle">
-        <ReactAntSideToggle ref='rc' />
-      </div>
-    );
-  }
-}
-
+});
 ```
 
-## customize style:
-```scss
-// customize your styles:
-$react-ant-side-toggle-options:(
-);
+## license
+Code released under [the MIT license](https://github.com/afeiship/page-update-checker/blob/master/LICENSE.txt).
 
-@import 'node_modules/react-ant-side-toggle/dist/style.scss';
-```
+[version-image]: https://img.shields.io/npm/v/@jswork/page-update-checker
+[version-url]: https://npmjs.org/package/@jswork/page-update-checker
+
+[license-image]: https://img.shields.io/npm/l/@jswork/page-update-checker
+[license-url]: https://github.com/afeiship/page-update-checker/blob/master/LICENSE.txt
+
+[size-image]: https://img.shields.io/bundlephobia/minzip/@jswork/page-update-checker
+[size-url]: https://github.com/afeiship/page-update-checker/blob/master/dist/index.min.js
+
+[download-image]: https://img.shields.io/npm/dm/@jswork/page-update-checker
+[download-url]: https://www.npmjs.com/package/@jswork/page-update-checker
