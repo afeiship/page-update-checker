@@ -7,7 +7,7 @@ export interface PageUpdateCheckerOptions {
 }
 
 const defaultOptions: PageUpdateCheckerOptions = {
-  url: '',
+  url: '/index.html',
   interval: 1000 * 60 * 5, // 5 minutes
   isUpdateAvailable: (latestHtml, newHtml) => latestHtml !== newHtml,
   onUpdateAvailable: (ctx) => console.log('Update available'),
@@ -40,14 +40,13 @@ class PageUpdateChecker {
 
   start() {
     const { interval, url, isUpdateAvailable, onUpdateAvailable, onError } = this.options;
-    const _url = url || '/index.html';
     const _interval = parseInt(localStorage.getItem('page_checker_interval') || '0') || interval!;
     if (_interval <= 0) return;
 
     this.intervalId = window.setInterval(() => {
       if (this.isIgnoreThisTime) return;
 
-      fetch(_url)
+      fetch(url!)
         .then(response => response.text())
         .then(newHtml => {
           if (this.latestHtml) {
