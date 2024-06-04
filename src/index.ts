@@ -2,7 +2,7 @@ export interface PageUpdateCheckerOptions {
   url?: string;
   interval?: number;
   storeKey?: string;
-  isUpdateAvailable?: (latestHtml: string, newHtml: string) => boolean;
+  isUpdateAvailable?: (oldHtml: string, newHtml: string) => boolean;
   onUpdateAvailable?: (ctx: PageUpdateChecker) => void;
   onError?: (error: Error) => void;
 }
