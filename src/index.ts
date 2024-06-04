@@ -1,7 +1,7 @@
 export interface PageUpdateCheckerOptions {
   url?: string;
   interval?: number;
-  isUpdateAvailable?: (currentHtml: string, newHtml: string) => boolean;
+  isUpdateAvailable?: (latestHtml: string, newHtml: string) => boolean;
   onUpdateAvailable?: () => void;
   onError?: (error: Error) => void;
 }
@@ -9,7 +9,7 @@ export interface PageUpdateCheckerOptions {
 const defaultOptions: PageUpdateCheckerOptions = {
   url: '',
   interval: 1000 * 60 * 5, // 5 minutes
-  isUpdateAvailable: (currentHtml, newHtml) => currentHtml !== newHtml,
+  isUpdateAvailable: (latestHtml, newHtml) => latestHtml !== newHtml,
   onUpdateAvailable: () => console.log('Update available'),
   onError: error => console.error(error),
 };
@@ -17,12 +17,11 @@ const defaultOptions: PageUpdateCheckerOptions = {
 class PageUpdateChecker {
   private readonly options: PageUpdateCheckerOptions;
   private intervalId: number | null = null;
-  private documentElement: HTMLElement;
   private isIgnoreThisTime = false;
+  private latestHtml = '';
 
   constructor(options: PageUpdateCheckerOptions) {
     this.options = { ...defaultOptions, ...options };
-    this.documentElement = document.documentElement;
   }
 
   static run(options: PageUpdateCheckerOptions) {
@@ -40,9 +39,12 @@ class PageUpdateChecker {
       fetch(_url)
         .then(response => response.text())
         .then(newHtml => {
-          if (isUpdateAvailable?.(this.documentElement.innerHTML, newHtml)) {
-            onUpdateAvailable?.call(this);
+          if (this.latestHtml) {
+            if (isUpdateAvailable?.(this.latestHtml, newHtml)) {
+              onUpdateAvailable?.call(this);
+            }
           }
+          this.latestHtml = newHtml;
         })
         .catch(error => {
           onError?.(error);
