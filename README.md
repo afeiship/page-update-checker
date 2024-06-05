@@ -1,6 +1,9 @@
 # page-update-checker
 > A lightweight, self-contained JavaScript module for real-time webpage update detection and user notification.
 
+> [!NOTE]
+> The url should be a public accessible url, no cacheable content.
+
 [![version][version-image]][version-url]
 [![license][license-image]][license-url]
 [![size][size-image]][size-url]
