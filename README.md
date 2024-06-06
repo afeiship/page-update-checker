@@ -30,6 +30,11 @@ const checker = PageUpdateChecker.run({
     }
   }
 });
+
+// trigger ingore events;
+window.dispatchEvent(new CustomEvent('@:page-update-checker:ignore'));
+// use nx
+nx.rootDispatch('@:page-update-checker:ignore');
 ```
 
 ## license
