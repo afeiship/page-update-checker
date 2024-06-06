@@ -18,6 +18,9 @@ const defaultOptions: PageUpdateCheckerOptions = {
   onError: error => console.error(error),
 };
 
+const EVENT_NS = 'page-update-checker';
+const EVENT_IGNORE = `${EVENT_NS}:ignore`;
+
 class PageUpdateChecker {
   private readonly options: PageUpdateCheckerOptions;
   private intervalId: number | null = null;
@@ -33,7 +36,7 @@ class PageUpdateChecker {
     this.eventIgnore = this.ignore.bind(this);
 
     // attach events
-    window.addEventListener(`${this.options.id}:page-update-checker:ignore`, this.eventIgnore);
+    window.addEventListener(`${this.options.id}:${EVENT_IGNORE}`, this.eventIgnore);
   }
 
   static run(options: PageUpdateCheckerOptions) {
@@ -79,7 +82,7 @@ class PageUpdateChecker {
   }
 
   stop() {
-    window.removeEventListener(`${this.options.id}:page-update-checker:ignore`, this.eventIgnore);
+    window.removeEventListener(`${this.options.id}:${EVENT_IGNORE}`, this.eventIgnore);
     if (this.intervalId) {
       window.clearInterval(this.intervalId);
       this.intervalId = null;
