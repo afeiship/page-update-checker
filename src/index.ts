@@ -1,4 +1,5 @@
 export interface PageUpdateCheckerOptions {
+  id?: string;
   url?: string;
   interval?: number;
   storeKey?: string;
@@ -8,6 +9,7 @@ export interface PageUpdateCheckerOptions {
 }
 
 const defaultOptions: PageUpdateCheckerOptions = {
+  id: '@',
   url: '/index.html',
   interval: 1000 * 60 * 5, // 5 minutes
   storeKey: 'page_checker_interval',
@@ -22,9 +24,16 @@ class PageUpdateChecker {
   private isIgnoreThisTime = false;
   private latestHtml = '';
 
+  // event handlers
+  private readonly eventIgnore: () => void;
+
   constructor(options: PageUpdateCheckerOptions) {
     this.options = { ...defaultOptions, ...options };
     this.reset();
+    this.eventIgnore = this.ignore.bind(this);
+
+    // attach events
+    window.addEventListener(`${this.options.id}:page-update-checker:ignore`, this.eventIgnore);
   }
 
   static run(options: PageUpdateCheckerOptions) {
@@ -70,6 +79,7 @@ class PageUpdateChecker {
   }
 
   stop() {
+    window.removeEventListener(`${this.options.id}:page-update-checker:ignore`, this.eventIgnore);
     if (this.intervalId) {
       window.clearInterval(this.intervalId);
       this.intervalId = null;
